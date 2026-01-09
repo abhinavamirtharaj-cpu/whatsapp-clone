@@ -1,23 +1,20 @@
 
-# OpenAI Sentiment Analysis Integration
+
+# VADER Sentiment Analysis Integration
 #
-# 1. Get an OpenAI API key from https://platform.openai.com/
-# 2. Set the key as an environment variable: export OPENAI_API_KEY=your-key
-# 3. Install the required package: pip install openai
-#
-# This script provides a function to analyze sentiment using OpenAI.
+# 1. No API key required. Just install vaderSentiment: pip install vaderSentiment
+# 2. This script provides a function to analyze sentiment using VADER.
 
 
 import os
 from dotenv import load_dotenv
-import openai
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # Load .env file
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-if not OPENAI_API_KEY:
-    raise RuntimeError('OPENAI_API_KEY environment variable not set.')
+
+analyzer = SentimentIntensityAnalyzer()
 
 # Map Gemini sentiment to emoji/label
 SENTIMENT_EMOJI = {
@@ -32,21 +29,19 @@ SENTIMENT_EMOJI = {
 }
 
 def analyze_sentiment(text):
-    prompt = f"""
-Classify the sentiment of the following message into one of these categories: anger, disgust, fear, joy, neutral, sadness, surprise. Respond with only the category name.
-
-Message: {text}
-"""
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            api_key=OPENAI_API_KEY
-        )
-        category = response.choices[0].message['content'].strip().lower()
-    except Exception as e:
-        print("Error extracting sentiment:", e)
-        category = 'unknown'
+    vs = analyzer.polarity_scores(text)
+    compound = vs['compound']
+    # Map VADER compound score to categories
+    if compound >= 0.5:
+        category = 'joy'
+    elif compound <= -0.5:
+        category = 'sadness'
+    elif compound > 0:
+        category = 'neutral'  # Slightly positive, but not strong
+    elif compound < 0:
+        category = 'neutral'  # Slightly negative, but not strong
+    else:
+        category = 'neutral'
     emoji = SENTIMENT_EMOJI.get(category, '❓')
     return category, emoji
     sentiment = response.text.strip().lower()

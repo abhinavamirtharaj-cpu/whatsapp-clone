@@ -1,3 +1,18 @@
+@socketio.on('decrypted_message')
+def handle_decrypted_message(data):
+    # data: {text, originalUser}
+    text = data['text']
+    user = data.get('originalUser', 'unknown')
+    try:
+        sentiment, emoji = analyze_sentiment(text)
+    except Exception as e:
+        sentiment, emoji = 'unknown', '❓'
+    # Broadcast only sentiment result (not the message)
+    emit('sentiment_result', {
+        'user': user,
+        'sentiment': sentiment,
+        'emoji': emoji
+    }, broadcast=True)
 
 from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room
@@ -10,6 +25,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 users = {}
+user_public_keys = {}
 
 @app.route('/')
 def index():
@@ -18,30 +34,46 @@ def index():
 @socketio.on('join')
 def on_join(data):
     username = data['username']
+    public_key = data.get('publicKey')
     users[request.sid] = username
+    if public_key:
+        user_public_keys[username] = public_key
     emit('status', {'msg': f'{username} joined ✅'}, broadcast=True)
     emit('users', list(users.values()), broadcast=True)
+    emit('user_public_keys', user_public_keys, broadcast=True)
 
 @socketio.on('message')
 def handle_message(data):
     username = users[request.sid]
-    text = data['text']
-    try:
-        sentiment, emoji = analyze_sentiment(text)
-    except Exception as e:
-        sentiment, emoji = 'unknown', '❓'
-    emit('message', {
-        'user': username,
-        'text': text,
-        'sentiment': sentiment,
-        'emoji': emoji
-    }, broadcast=True)
+    if data.get('encrypted'):
+        # Broadcast encrypted payload as-is
+        emit('message', {
+            'user': username,
+            'encrypted': True,
+            'ciphertext': data['ciphertext'],
+            'iv': data['iv'],
+            'encryptedKeys': data['encryptedKeys']
+        }, broadcast=True)
+    else:
+        text = data['text']
+        try:
+            sentiment, emoji = analyze_sentiment(text)
+        except Exception as e:
+            sentiment, emoji = 'unknown', '❓'
+        emit('message', {
+            'user': username,
+            'text': text,
+            'sentiment': sentiment,
+            'emoji': emoji
+        }, broadcast=True)
 
 @socketio.on('disconnect')
 def handle_disconnect():
     if request.sid in users:
         username = users.pop(request.sid)
+        user_public_keys.pop(username, None)
         emit('status', {'msg': f'{username} left 👋'}, broadcast=True)
+        emit('user_public_keys', user_public_keys, broadcast=True)
 
 if __name__ == '__main__':
     print("🌐 LOCAL: http://localhost:5000")
