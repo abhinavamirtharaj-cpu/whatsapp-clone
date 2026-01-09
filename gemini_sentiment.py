@@ -2,14 +2,14 @@
 #
 # 1. Get a Gemini API key from Google AI Studio (https://aistudio.google.com/)
 # 2. Set the key as an environment variable: export GEMINI_API_KEY=your-key
-# 3. Install the required package: pip install google-generativeai
+# 3. Install the required package: pip install google-genai
 #
 # This script provides a function to analyze sentiment using Gemini.
 
 
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+import google.genai as genai
 
 # Load .env file
 load_dotenv()
@@ -37,7 +37,10 @@ Classify the sentiment of the following message into one of these categories: an
 Message: {text}
 """
     model = genai.GenerativeModel('gemini-pro')
-    response = model.generate_content(prompt)
+    response = model.generate_content([prompt])
+    category = response.candidates[0].content.parts[0].text.strip().lower()
+    emoji = SENTIMENT_EMOJI.get(category, '❓')
+    return category, emoji
     sentiment = response.text.strip().lower()
     emoji = SENTIMENT_EMOJI.get(sentiment, '❓')
     return sentiment, emoji
