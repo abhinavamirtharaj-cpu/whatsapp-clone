@@ -84,14 +84,6 @@
         <div id="header">SEAN - Live Chat
             <button id="theme-toggle" title="Toggle theme">🌙</button>
         </div>
-            <script>
-                // Theme toggle
-                const themeBtn = document.getElementById('theme-toggle');
-                themeBtn.onclick = () => {
-                    document.body.classList.toggle('light-mode');
-                    themeBtn.textContent = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
-                };
-            </script>
         <div id="users">Online: Nobody</div>
         <div id="messages"></div>
         <div id="input-area">
@@ -100,6 +92,12 @@
         </div>
     </div>
     <script>
+        // Theme toggle (moved here for valid HTML)
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.onclick = () => {
+            document.body.classList.toggle('light-mode');
+            themeBtn.textContent = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
+        };
         const socket = io();
         let username;
         // --- Hybrid Encryption: Key Management ---
