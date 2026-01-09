@@ -301,6 +301,7 @@
         // Listen for server sentiment results
         socket.on('sentiment_result', data => {
             // data: {user, sentiment, emoji}
+            console.log('[DEBUG] Sentiment result received:', data);
             latestSentiment[data.user] = {sentiment: data.sentiment, emoji: data.emoji};
         });
         socket.on('message', addMessage);
