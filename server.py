@@ -1,4 +1,15 @@
-## Handler must be after socketio initialization
+from flask import Flask, request
+from flask_socketio import SocketIO, emit, join_room
+from collections import defaultdict
+import os
+from gemini_sentiment import analyze_sentiment
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+users = {}
+user_public_keys = {}
 
 @socketio.on('decrypted_message')
 def handle_decrypted_message(data):
@@ -15,9 +26,6 @@ def handle_decrypted_message(data):
         'sentiment': sentiment,
         'emoji': emoji
     }, broadcast=True)
-
-from flask import Flask, request
-from flask_socketio import SocketIO, emit, join_room
 from collections import defaultdict
 import os
 from gemini_sentiment import analyze_sentiment
