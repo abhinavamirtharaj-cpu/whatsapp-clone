@@ -16,7 +16,6 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 if not GEMINI_API_KEY:
     raise RuntimeError('GEMINI_API_KEY environment variable not set.')
-genai.configure(api_key=GEMINI_API_KEY)
 
 # Map Gemini sentiment to emoji/label
 SENTIMENT_EMOJI = {
@@ -36,7 +35,7 @@ Classify the sentiment of the following message into one of these categories: an
 
 Message: {text}
 """
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-pro', api_key=GEMINI_API_KEY)
     response = model.generate_content([prompt])
     category = response.candidates[0].content.parts[0].text.strip().lower()
     emoji = SENTIMENT_EMOJI.get(category, '❓')
