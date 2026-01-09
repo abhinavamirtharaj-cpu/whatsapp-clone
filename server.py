@@ -46,9 +46,7 @@ def handle_disconnect():
 if __name__ == '__main__':
     print("🌐 LOCAL: http://localhost:5000")
     try:
-        from pyngrok import ngrok
-        public_url = ngrok.connect(5000)
-        print(f"🌍 PUBLIC: {public_url}")
+           print(" * Server running on http://localhost:5000 (or your public IP)")
     except:
-        print("❌ pip install pyngrok for public URL")
+           print(f"Error starting server: {e}")
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)

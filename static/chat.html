@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WhatsApp Clone</title>
+    <title>SEAN</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -25,12 +25,25 @@
 </head>
 <body>
     <div id="login">
-        <h2>💬 WhatsApp Clone</h2>
+        <h2 style="margin-bottom:10px;">💬 SEAN</h2>
+        <div style="background:#fff;color:#333;padding:16px 20px;border-radius:16px;max-width:400px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+            <h3 style="margin-bottom:6px;">About this project</h3>
+            <p style="font-size:14px;">SEAN (Sentiment Enhanced AI Network) is a real-time chat app with advanced AI-powered sentiment analysis. Every message is analyzed for emotion and color-coded, making conversations more expressive, insightful, and emotionally aware.<br><br>
+            <b>Why is sentiment analysis important?</b><br>
+            Sentiment analysis helps users understand the emotional tone of conversations, promoting empathy and healthy communication. It can highlight misunderstandings, encourage positive interactions, and make online chat safer and more enjoyable for everyone.</p>
+            <h3 style="margin:12px 0 6px 0;">About the developers</h3>
+            <ul style="font-size:14px;list-style:square inside;margin-bottom:0;">
+                <li><b>Abhinav Amirtharaj</b> – Visionary full-stack developer, passionate about building smart, user-friendly apps that make a difference.</li>
+                <li><b>S.Abinanthan</b> – Backend maestro, ensures robust, scalable, and lightning-fast performance for every feature.</li>
+                <li><b>U.Kavin</b> – Creative coder and UI/UX enthusiast, always striving for beautiful design and seamless user experience.</li>
+            </ul>
+            <p style="font-size:13px;margin-top:8px;color:#388e3c;">Together, we are dedicated to making chat more meaningful, positive, and fun with the power of AI!</p>
+        </div>
         <input id="username" placeholder="Enter your name" style="width:250px;padding:12px;border-radius:25px;border:none;margin:20px;">
         <button onclick="joinChat()">Start Messaging</button>
     </div>
     <div id="chat" style="display:none;">
-        <div id="header">WhatsApp Clone - Live Chat</div>
+        <div id="header">SEAN - Live Chat</div>
         <div id="users">Online: Nobody</div>
         <div id="messages"></div>
         <div id="input-area">
@@ -63,7 +76,19 @@
                 div.textContent = msg.text;
             } else {
                 div.className = `message ${msg.user === username ? 'mine' : 'other'}`;
-                div.innerHTML = `<div class="bubble">${msg.text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m] || m)}</div>`;
+                // Sentiment color class
+                let sentimentClass = '';
+                if (msg.sentiment) {
+                    sentimentClass = `sentiment-${msg.sentiment}`;
+                }
+                // Sentiment label and emoji, always shown at top
+                let sentimentHtml = '';
+                if (msg.emoji && msg.sentiment) {
+                    sentimentHtml = `<span class=\"sentiment-label\">${msg.emoji} ${msg.sentiment.charAt(0).toUpperCase() + msg.sentiment.slice(1)}</span>`;
+                } else if (msg.sentiment) {
+                    sentimentHtml = `<span class=\"sentiment-label\">${msg.sentiment.charAt(0).toUpperCase() + msg.sentiment.slice(1)}</span>`;
+                }
+                div.innerHTML = `<div class=\"bubble ${sentimentClass}\">${sentimentHtml}${msg.text.replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'})[m] || m)}</div>`;
             }
             messages.appendChild(div);
             messages.scrollTop = messages.scrollHeight;
