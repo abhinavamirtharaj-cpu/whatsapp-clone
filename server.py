@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room
 from collections import defaultdict
 import os
-from gemini_sentiment import analyze_sentiment
+from vader_sentiment import analyze_sentiment
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
