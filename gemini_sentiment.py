@@ -1,21 +1,23 @@
-# Gemini Sentiment Analysis Integration
+
+# OpenAI Sentiment Analysis Integration
 #
-# 1. Get a Gemini API key from Google AI Studio (https://aistudio.google.com/)
-# 2. Set the key as an environment variable: export GEMINI_API_KEY=your-key
-# 3. Install the required package: pip install google-genai
+# 1. Get an OpenAI API key from https://platform.openai.com/
+# 2. Set the key as an environment variable: export OPENAI_API_KEY=your-key
+# 3. Install the required package: pip install openai
 #
-# This script provides a function to analyze sentiment using Gemini.
+# This script provides a function to analyze sentiment using OpenAI.
 
 
 import os
 from dotenv import load_dotenv
-import google.genai as genai
+import openai
 
 # Load .env file
 load_dotenv()
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-if not GEMINI_API_KEY:
-    raise RuntimeError('GEMINI_API_KEY environment variable not set.')
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+if not OPENAI_API_KEY:
+    raise RuntimeError('OPENAI_API_KEY environment variable not set.')
 
 # Map Gemini sentiment to emoji/label
 SENTIMENT_EMOJI = {
@@ -35,9 +37,16 @@ Classify the sentiment of the following message into one of these categories: an
 
 Message: {text}
 """
-    model = genai.GenerativeModel('gemini-pro', api_key=GEMINI_API_KEY)
-    response = model.generate_content([prompt])
-    category = response.candidates[0].content.parts[0].text.strip().lower()
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            api_key=OPENAI_API_KEY
+        )
+        category = response.choices[0].message['content'].strip().lower()
+    except Exception as e:
+        print("Error extracting sentiment:", e)
+        category = 'unknown'
     emoji = SENTIMENT_EMOJI.get(category, '❓')
     return category, emoji
     sentiment = response.text.strip().lower()
