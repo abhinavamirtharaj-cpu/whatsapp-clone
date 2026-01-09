@@ -1,3 +1,5 @@
+## Handler must be after socketio initialization
+
 @socketio.on('decrypted_message')
 def handle_decrypted_message(data):
     # data: {text, originalUser}
