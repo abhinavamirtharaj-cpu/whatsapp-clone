@@ -97,7 +97,7 @@
                 } else if (msg.sentiment) {
                     sentimentHtml = `<span class=\"sentiment-label\">${msg.sentiment.charAt(0).toUpperCase() + msg.sentiment.slice(1)}</span>`;
                 }
-                div.innerHTML = `<div class=\"bubble ${sentimentClass}\">${sentimentHtml}${msg.text.replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'})[m] || m)}</div>`;
+                div.innerHTML = `<div class=\"bubble ${sentimentClass}\">${sentimentHtml}${msg.text.replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;','\'':'&#39;'})[m] || m)}</div>`;
             }
             messages.appendChild(div);
             messages.scrollTop = messages.scrollHeight;
