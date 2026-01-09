@@ -28,7 +28,7 @@ def handle_decrypted_message(data):
     }, broadcast=True)
 from collections import defaultdict
 import os
-from gemini_sentiment import analyze_sentiment
+from vader_sentiment import analyze_sentiment
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
