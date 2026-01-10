@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LOCAL Chat - Two Person Messaging</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Socket.IO Client Library -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+  <!-- Username Entry Modal -->
+  <div id="username-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Welcome to LOCAL Chat</h2>
+        <p>Enter your name to start messaging</p>
+      </div>
+      <input
+        type="text"
+        id="username-input"
+        placeholder="Your name..."
+        maxlength="20"
+        autocomplete="off"
+      />
+      <button id="join-chat-btn" class="primary">Join Chat</button>
+    </div>
+  </div>
+
+  <!-- Main Chat Interface -->
+  <div id="chat-panel" class="chat-panel hidden">
+    <div class="chat-container">
+      <main class="chat-main">
+        <!-- Chat Header -->
+        <header class="chat-header">
+          <div class="chat-title">
+            <div class="chat-room-info">
+              <strong id="chat-room-name">LOCAL</strong>
+              <div class="status" id="current-user">Loading...</div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Messages Area -->
+        <div class="chat-messages" id="messages">
+          <div class="messages-inner" id="messages-inner">
+            <!-- Messages will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Message Input Form -->
+        <form class="chat-input" id="chat-form">
+          <textarea
+            id="message-input"
+            placeholder="Type a message..."
+            rows="1"
+            maxlength="1000"
+          ></textarea>
+          <button type="submit" class="primary">Send</button>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <!-- Custom Script -->
+  <script src="script.js"></script>
+</body>
+</html>
